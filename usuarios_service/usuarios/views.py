@@ -1,14 +1,17 @@
-from rest_framework import viewsets, permissions
-from .models import Usuario
-from .serializers import UsuarioSerializer, UsuarioLogadoSerializer, UsuarioBasicoSerializer
+from rest_framework import viewsets, permissions, status, filters
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status, viewsets, filters
-from .services import *
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import ValidationError
-from .permissions import IsAdmin, IsSelfOrAdmin
 from django_filters.rest_framework import DjangoFilterBackend
+from .models import Usuario
+from .serializers import (UsuarioSerializer, UsuarioLogadoSerializer, UsuarioBasicoSerializer, CustomTokenObtainPairSerializer)
+from .services import *
+from .permissions import IsAdmin, IsSelfOrAdmin
+from rest_framework_simplejwt.views import TokenObtainPairView
+
+class CustomTokenView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer
 
 
 class UsuarioViewSet(viewsets.ModelViewSet):
@@ -45,6 +48,7 @@ class LoginView(APIView):
         except Exception as e:
             return Response({'detail': str(e)}, status=status.HTTP_401_UNAUTHORIZED)
         
+
 class UsuarioLogadoView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -75,6 +79,7 @@ class UsuarioDadosBasicosView(APIView):
         except Usuario.DoesNotExist:
             return Response({"erro": "Usuário não encontrado."}, status=status.HTTP_404_NOT_FOUND)
 
+
 class UsuarioDadosCompletosView(APIView):
     def get(self, request, id):
         try:
@@ -93,3 +98,12 @@ class UsuarioDadosCompletosView(APIView):
             })
         except Usuario.DoesNotExist:
             return Response({"erro": "Usuário não encontrado"}, status=404)
+        
+class UsuarioDadosBasicosView(APIView):
+    def get(self, request, id):
+        try:
+            usuario = Usuario.objects.get(id=id, deletado=False)
+            serializer = UsuarioBasicoSerializer(usuario)
+            return Response(serializer.data)
+        except Usuario.DoesNotExist:
+            return Response({'erro': 'Usuário não encontrado'}, status=404)

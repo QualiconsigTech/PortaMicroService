@@ -4,7 +4,7 @@ from decouple import config
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-troque-essa-chave-em-producao'
+SECRET_KEY = config('SECRET_KEY')
 DEBUG = True
 ALLOWED_HOSTS = []
 
@@ -89,6 +89,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # 🔐 Configurações de autenticação
 AUTH_USER_MODEL = 'usuarios.Usuario'
+
+AUTHENTICATION_BACKENDS = [
+    'usuarios.backends.EmailBackend',
+]
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
