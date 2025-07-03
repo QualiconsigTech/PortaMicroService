@@ -1,5 +1,7 @@
 from pathlib import Path
 from datetime import timedelta
+from decouple import config
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -16,8 +18,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # Apps do projeto
-    'auth',
-    'core',
+    'apps.auth',
+    'apps.core',
 
     # Terceiros
     'rest_framework',
@@ -57,13 +59,14 @@ WSGI_APPLICATION = 'wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'core_service_db',
-        'USER': 'postgres',
-        'PASSWORD': 'sua_senha_aqui',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'NAME': config('DB_NAME'),
+        'USER': config('DB_USER'),
+        'PASSWORD': config('DB_PASS'),
+        'HOST': config('DB_HOST'),
+        'PORT': config('DB_PORT', default='5432'),
     }
 }
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},

@@ -10,6 +10,6 @@ urlpatterns = [
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
     # Endpoints do núcleo organizacional
-    path('api/core/', include('core.urls')),
-    path('api/auth/', include('auth.urls')),
+    path('api/core/', include('apps.core.urls')),
+    path('api/auth/', include('apps.auth.urls')),
 ]
