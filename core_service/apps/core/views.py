@@ -1,8 +1,9 @@
 from django.shortcuts import render
 from rest_framework import viewsets
 from .models import Grupo, Setor, Cargo
-from .serializers import GrupoSerializer, SetorSerializer, CargoSerializer
-
+from .serializers import *
+from .permissions import AllowOnlyGateway
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 class GrupoViewSet(viewsets.ModelViewSet):
     queryset = Grupo.objects.all()
@@ -17,3 +18,7 @@ class SetorViewSet(viewsets.ModelViewSet):
 class CargoViewSet(viewsets.ModelViewSet):
     queryset = Cargo.objects.all()
     serializer_class = CargoSerializer
+
+
+class CustomTokenView(TokenObtainPairView):
+    permission_classes = [AllowOnlyGateway]

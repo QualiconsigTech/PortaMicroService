@@ -5,7 +5,7 @@ from decouple import config
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-troque-essa-chave-em-producao'
+SECRET_KEY = config('SECRET_KEY')
 DEBUG = True
 ALLOWED_HOSTS = []
 
@@ -37,6 +37,9 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'urls'
+
+GATEWAY_URL = 'http://localhost:8000'  
+
 
 TEMPLATES = [
     {

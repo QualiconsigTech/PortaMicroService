@@ -9,6 +9,11 @@ from .serializers import (UsuarioSerializer, UsuarioLogadoSerializer, UsuarioBas
 from .services import *
 from .permissions import IsAdmin, IsSelfOrAdmin
 from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework.permissions import AllowAny
+from django.shortcuts import get_object_or_404
+from core_service.core.permissions import AllowOnlyGateway
+
+
 
 class CustomTokenView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
@@ -106,4 +111,16 @@ class UsuarioDadosBasicosView(APIView):
             serializer = UsuarioBasicoSerializer(usuario)
             return Response(serializer.data)
         except Usuario.DoesNotExist:
-            return Response({'erro': 'Usuário não encontrado'}, status=404)
+            return Response({'erro': 'Usuário não encontrado'}, status=status.HTTP_404_NOT_FOUND)
+
+# usuarios/views.py
+class BuscarUsuarioPorIdView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, id):
+        usuario = get_object_or_404(Usuario, id=id, deletado=False)
+        serializer = UsuarioSerializer(usuario)
+        return Response(serializer.data)
+
+class CustomTokenView(TokenObtainPairView):
+    permission_classes = [AllowOnlyGateway]
